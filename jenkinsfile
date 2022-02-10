@@ -1,19 +1,23 @@
-node {
-     def app 
-     stage('clone repository') {
-      checkout scm  
-    }
-     stage('Build docker Image'){
-      app = docker.build("vigneshcloud/cicd")
-    }
-     stage('Test Image'){
-       app.inside {
-         sh 'echo "TEST PASSED"' 
-      }  
-    }
-     stage('Push Image'){
-       docker.withRegistry('https://registry.hub.docker.com', 'git') {            
+node {    
+      def app     
+      stage('Clone repository') {               
+             
+            checkout scm    
+      }     
+      stage('Build image') {         
+       
+            app = docker.build("vigneshcloud/cicd")    
+       }     
+      stage('Test image') {           
+            app.inside {            
+             
+             sh 'echo "Tests passed"'        
+            }    
+        }     
+       stage('Push image') {
+                                                  docker.withRegistry('https://registry.hub.docker.com', 'git') {            
        app.push("${env.BUILD_NUMBER}")            
-       app.push("latest")   
-   }
-}
+       app.push("latest")        
+              }    
+           }
+        }
